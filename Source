@@ -1,0 +1,179 @@
+Imports System.Threading
+Module Module1
+    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(1000, 1000) As String, ColourX As Integer, ColourY
+    Dim zMode As Boolean = False, xCenter As Double, yCenter
+    Dim zoom As Double
+    Sub Main()
+        Console.ForegroundColor = ConsoleColor.White
+        Console.WriteLine("For this programme to work you MUST set the terminal font to a '4x6' raster font, if you can easily read this then your font size is probaly wrong. :)")
+        Console.WriteLine()
+        Console.WriteLine("Please enter the horizontal resolution of your monitor")
+        Dim width As Integer = (Console.ReadLine() \ 4) - 6
+        Console.WriteLine("Please enter the vertial resolution of your monitor")
+        Dim height As Integer = Console.ReadLine() \ 6
+        Console.Clear()
+        While True
+            ColourX = 0
+            ColourY = 0
+            Dim thread0 As New Thread(AddressOf core2)
+            Dim thread1 As New Thread(AddressOf Main)
+            Console.SetCursorPosition(0, WritingPos)
+            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("                                                                                                      ")
+            If zMode = False Then
+                Console.WriteLine("Enter Number of Interations")
+                maxIterations = Console.ReadLine() ' Maximum number of iterations
+                Console.WriteLine("Enter Zoom Level")
+                zoom = Console.ReadLine() ' Zoom level
+                Console.WriteLine("Enter x coord for image centre (-0.5 = default)")
+                xCenter = Console.ReadLine() ' X-coordinate of the center
+                Console.WriteLine("Enter y coord for image centre (0 = default)")
+                yCenter = Console.ReadLine() ' Y-coordinate of the center
+                yCenter = yCenter * -1
+            End If
+            Console.Clear()
+            Dim halfWidth As Double = width / 2
+            Dim halfheight As Double = height / 2
+            Dim zoomCalc As Double = 0.5 * zoom * width
+            Dim zoomCalc2 As Double = 0.5 * zoom * height
+            For y As Integer = 0 To height - 1
+                For x As Integer = 0 To width - 1
+                    Dim zx As Double = 0
+                    Dim zy As Double = 0
+                    Dim cx As Double = (x - halfWidth) / zoomCalc + xCenter
+                    Dim cy As Double = (y - halfheight) / zoomCalc2 + yCenter
+                    iteration = 0
+                    While (zx * zx + zy * zy < 4) And (iteration < maxIterations)
+                        Dim tmp As Double = zx * zx - zy * zy + cx
+                        zy = 2 * zx * zy + cy
+                        zx = tmp
+                        iteration += 1
+                    End While
+                    core2()
+                Next
+                Console.WriteLine() ' Move to the next row
+                ColourY += 1
+                ColourX = 0
+            Next
+            Console.ForegroundColor = ConsoleColor.White
+            Console.WriteLine("Re: " & xCenter & " Im: " & (yCenter * -1) & " Zoom: " & zoom)
+            Console.WriteLine()
+            Console.WriteLine("Press Z to activate zooming tool (and deactivate) and any other key to continue with coordinate system")
+            If Console.ReadKey().KeyChar = "z" Then
+                zooming(width, height)
+            Else
+                zMode = False
+            End If
+            WritingPos = height + 2
+        End While
+    End Sub
+    Sub core2()
+        If iteration = maxIterations Then
+            ColourMap(ColourX, ColourY) = "Black"
+            ColourX += 1
+            Console.Write(" ")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.75 Then
+            ColourMap(ColourX, ColourY) = "DarkBlue"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.DarkBlue
+            Console.Write("█")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.5 Then
+            ColourMap(ColourX, ColourY) = "Blue"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.Blue
+            Console.Write("█")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.25 Then
+            ColourMap(ColourX, ColourY) = "Cyan"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.Cyan
+            Console.Write("█")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.15 Then
+            ColourMap(ColourX, ColourY) = "Red"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.Red
+            Console.Write("█")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.1 Then
+            ColourMap(ColourX, ColourY) = "Green"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.Green
+            Console.Write("█")
+        ElseIf iteration < maxIterations And iteration > maxIterations * 0.05 Then
+            ColourMap(ColourX, ColourY) = "Yellow"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.Yellow
+            Console.Write("█")
+        Else
+            ColourMap(ColourX, ColourY) = "White"
+            ColourX += 1
+            Console.ForegroundColor = ConsoleColor.White
+            Console.Write("█")
+        End If
+    End Sub
+    Sub zooming(width As Integer, height As Integer)
+        Dim MovementKeys As Char, MidX As Integer = width / 2, MidY As Integer = height / 2
+        Console.SetCursorPosition(MidX, MidY)
+        Console.ForegroundColor = ConsoleColor.Magenta
+        Console.Write("█")
+        While MovementKeys <> "z" And MovementKeys <> " "
+            MovementKeys = Console.ReadKey(True).KeyChar()
+            If MovementKeys = "w" Then
+                Console.SetCursorPosition(MidX, MidY)
+                ColourChart(MidX, MidY)
+                Console.Write("█")
+                MidY -= 1
+            ElseIf MovementKeys = "s" Then
+                Console.SetCursorPosition(MidX, MidY)
+                ColourChart(MidX, MidY)
+                Console.Write("█")
+                MidY += 1
+            ElseIf MovementKeys = "a" Then
+                Console.SetCursorPosition(MidX, MidY)
+                ColourChart(MidX, MidY)
+                Console.Write("█")
+                MidX -= 1
+            ElseIf MovementKeys = "d" Then
+                Console.SetCursorPosition(MidX, MidY)
+                ColourChart(MidX, MidY)
+                Console.Write("█")
+                MidX += 1
+            ElseIf MovementKeys = " " Then
+                xCenter = xCenter + ((MidX - width / 2) * ((2 / zoom) / width))
+                yCenter = yCenter + ((MidY - height / 2) * ((2 / zoom) / height))
+                Dim zMultiplier As Integer = 1
+                Console.ForegroundColor = ConsoleColor.White
+                WritingPos = height + 2
+                Console.SetCursorPosition(0, WritingPos)
+                Console.WriteLine("                                                                                                      ")
+                Console.WriteLine(" Please enter zoom multiplier.")
+                zMultiplier = Console.ReadLine()
+                Console.WriteLine()
+                Console.WriteLine(" Please enter number of iterations.")
+                maxIterations = Console.ReadLine()
+                zoom = zoom * zMultiplier
+                zMode = True
+            End If
+            Console.SetCursorPosition(MidX, MidY)
+            Console.ForegroundColor = ConsoleColor.Magenta
+            Console.Write("█")
+        End While
+    End Sub
+    Sub ColourChart(MidX As Integer, MidY As Integer)
+        If ColourMap(MidX, MidY) = "White" Then
+            Console.ForegroundColor = ConsoleColor.White
+        ElseIf ColourMap(MidX, MidY) = "Yellow" Then
+            Console.ForegroundColor = ConsoleColor.Yellow
+        ElseIf ColourMap(MidX, MidY) = "Green" Then
+            Console.ForegroundColor = ConsoleColor.Green
+        ElseIf ColourMap(MidX, MidY) = "Cyan" Then
+            Console.ForegroundColor = ConsoleColor.Cyan
+        ElseIf ColourMap(MidX, MidY) = "Red" Then
+            Console.ForegroundColor = ConsoleColor.Red
+        ElseIf ColourMap(MidX, MidY) = "Blue" Then
+            Console.ForegroundColor = ConsoleColor.Blue
+        ElseIf ColourMap(MidX, MidY) = "DarkBlue" Then
+            Console.ForegroundColor = ConsoleColor.DarkBlue
+        ElseIf ColourMap(MidX, MidY) = "Black" Then
+            Console.ForegroundColor = ConsoleColor.Black
+        End If
+    End Sub
+End Module
