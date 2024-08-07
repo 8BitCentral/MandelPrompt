@@ -1,9 +1,5 @@
 MandelPrompt is a tool that allows you to explore and zoom Mandelbrot fractals in the windows console.
 
-Contents: 
- -Supported Operating Sytems
- -Capabilities and limitations
-
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 MandelPrompt has three versions as listed below:
