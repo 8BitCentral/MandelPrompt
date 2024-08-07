@@ -17,9 +17,12 @@ MandelPrompt has three versions as listed below:
 
  In Windows XP the command prompt doesn't fullscreen without forcing an larger font so the screen resolution to text resolution converter doesn't work properly.
 
-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+------------------------
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
  -MandelPrompt allows the user to define coordinate positions as zooms to render fractals.
  -After the initial fractal has been generated you can press 'Z' to create a cursor that can be controlled with WASD, when space is pressed this location will be selected for zooming.
   The increase the zoom (ontop of the zoom that has already been performed) you can then enter an amount and then enter the iterations.
  -MandelPrompt supports 8 colours and runs with 4x6 text characters.
+
+ ![Fractal Zoom](https://github.com/user-attachments/assets/ac80eae6-e2a4-4372-a01d-9637065096b5)
