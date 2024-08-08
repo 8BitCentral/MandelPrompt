@@ -72,32 +72,32 @@ Module Module1
             ColourMap(ColourX, ColourY) = "Black"
             ColourX += 1
             Console.Write(" ")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.75 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.75 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "DarkBlue"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.DarkBlue
             Console.Write("█")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.5 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.5 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "Blue"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.Blue
             Console.Write("█")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.25 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.25 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "Cyan"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.Cyan
             Console.Write("█")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.15 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.15 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "Red"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.Red
             Console.Write("█")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.1 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.1 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "Green"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.Green
             Console.Write("█")
-        ElseIf iteration < maxIterations And iteration > maxIterations * 0.05 Then
+        ElseIf iteration < maxIterations And iteration > maxIterations * (0.05 / (Math.Log10(zoom) / 2 + 1)) Then
             ColourMap(ColourX, ColourY) = "Yellow"
             ColourX += 1
             Console.ForegroundColor = ConsoleColor.Yellow
@@ -177,3 +177,5 @@ Module Module1
         End If
     End Sub
 End Module
+
+
