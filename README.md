@@ -22,4 +22,8 @@ MattKC ported .Net 2.0 to Windows 95 at: https://github.com/itsmattkc/dotnet9x .
   The increase the zoom (ontop of the zoom that has already been performed) you can then enter an amount and then enter the iterations.
  -MandelPrompt supports 8 colours and runs with 4x6 text characters.
 
+ ----------------------------------------------------------------------------------------------------------------------------
+
+ You can now also print a text file to desktop which contain the last rendered frame as an ASCII image.
+
  ![Fractal Zoom](https://github.com/user-attachments/assets/ac80eae6-e2a4-4372-a01d-9637065096b5)
