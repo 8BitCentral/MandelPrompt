@@ -1,6 +1,6 @@
 Imports System.Threading
 Module Module1
-    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(1000, 1000) As String, ColourX As Integer, ColourY
+    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As String, ColourX As Integer, ColourY
     Dim zMode As Boolean = False, xCenter As Double, yCenter
     Dim zoom As Double
     Sub Main()
@@ -19,7 +19,7 @@ Module Module1
             Dim thread1 As New Thread(AddressOf Main)
             Console.SetCursorPosition(0, WritingPos)
             Console.ForegroundColor = ConsoleColor.White
-            Console.WriteLine("                                                                                                      ")
+            Console.WriteLine("                                                                                                                                         ")
             If zMode = False Then
                 Console.WriteLine("Enter Number of Interations")
                 maxIterations = Console.ReadLine() ' Maximum number of iterations
@@ -58,12 +58,46 @@ Module Module1
             Console.ForegroundColor = ConsoleColor.White
             Console.WriteLine("Re: " & xCenter & " Im: " & (yCenter * -1) & " Zoom: " & zoom)
             Console.WriteLine()
-            Console.WriteLine("Press Z to activate zooming tool (and deactivate) and any other key to continue with coordinate system")
-            If Console.ReadKey().KeyChar = "z" Then
-                zooming(width, height)
-            Else
-                zMode = False
-            End If
+            Dim RenderOption As Char = "p"
+            Console.WriteLine("Press z to activate zooming tool (and deactivate), p to dump Mandelbrot to text file and any other key to continue with coordinate system")
+            Dim DesktopPath As String = My.Computer.FileSystem.SpecialDirectories.Desktop
+            Dim Path As String = IO.Path.Combine(DesktopPath, "Mandelbrot.txt")
+            While RenderOption = "p"
+                RenderOption = Console.ReadKey(True).KeyChar
+                If RenderOption = "z" Then
+                    zooming(width, height)
+                ElseIf RenderOption = "p" Then
+                    Console.Beep(450, 100)
+                    Console.Beep(700, 150)
+                    Dim file As System.IO.StreamWriter
+                    file = My.Computer.FileSystem.OpenTextFileWriter(Path, True)
+                    For i = 0 To height
+                        For j = 0 To width
+                            If ColourMap(j, i) = "Black" Then
+                                file.Write("@")
+                            ElseIf ColourMap(j, i) = "DarkBlue" Then
+                                file.Write("%")
+                            ElseIf ColourMap(j, i) = "Blue" Then
+                                file.Write("#")
+                            ElseIf ColourMap(j, i) = "Cyan" Then
+                                file.Write("O")
+                            ElseIf ColourMap(j, i) = "Red" Then
+                                file.Write("I")
+                            ElseIf ColourMap(j, i) = "Green" Then
+                                file.Write("/")
+                            ElseIf ColourMap(j, i) = "Yellow" Then
+                                file.Write("-")
+                            ElseIf ColourMap(j, i) = "White" Then
+                                file.Write(" ")
+                            End If
+                        Next
+                        file.WriteLine()
+                    Next
+                    file.Close()
+                Else
+                    zMode = False
+                End If
+            End While
             WritingPos = height + 2
         End While
     End Sub
@@ -143,7 +177,7 @@ Module Module1
                 Console.ForegroundColor = ConsoleColor.White
                 WritingPos = height + 2
                 Console.SetCursorPosition(0, WritingPos)
-                Console.WriteLine("                                                                                                      ")
+                Console.WriteLine("                                                                                                                                         ")
                 Console.WriteLine(" Please enter zoom multiplier.")
                 zMultiplier = Console.ReadLine()
                 Console.WriteLine()
