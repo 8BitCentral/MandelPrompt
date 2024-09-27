@@ -1,7 +1,7 @@
 Imports System.Threading
 Module Module1
-    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As String, ColourX As Integer, ColourY
-    Dim zMode As Boolean = False, xCenter As Double, yCenter
+    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As String, ColourX As Integer, ColourY As Integer
+    Dim zMode As Boolean = False, xCenter As Double, yCenter As Double
     Dim zoom As Double
     Sub Main()
         Console.ForegroundColor = ConsoleColor.White
@@ -71,7 +71,6 @@ Module Module1
                     Console.Beep(700, 150)
                     Dim file As System.IO.StreamWriter
                     file = My.Computer.FileSystem.OpenTextFileWriter(Path, True)
-                    Dim i As Integer, j
                     For i = 0 To height
                         For j = 0 To width
                             If ColourMap(j, i) = "Black" Then
