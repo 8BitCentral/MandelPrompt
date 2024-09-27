@@ -71,6 +71,7 @@ Module Module1
                     Console.Beep(700, 150)
                     Dim file As System.IO.StreamWriter
                     file = My.Computer.FileSystem.OpenTextFileWriter(Path, True)
+                    Dim i As Integer, j
                     For i = 0 To height
                         For j = 0 To width
                             If ColourMap(j, i) = "Black" Then
@@ -143,7 +144,7 @@ Module Module1
             Console.Write("█")
         End If
     End Sub
-    Sub zooming(width As Integer, height As Integer)
+    Sub zooming(ByVal width As Integer, ByVal height As Integer)
         Dim MovementKeys As Char, MidX As Integer = width / 2, MidY As Integer = height / 2
         Console.SetCursorPosition(MidX, MidY)
         Console.ForegroundColor = ConsoleColor.Magenta
@@ -191,7 +192,7 @@ Module Module1
             Console.Write("█")
         End While
     End Sub
-    Sub ColourChart(MidX As Integer, MidY As Integer)
+    Sub ColourChart(ByVal MidX As Integer, ByVal MidY As Integer)
         If ColourMap(MidX, MidY) = "White" Then
             Console.ForegroundColor = ConsoleColor.White
         ElseIf ColourMap(MidX, MidY) = "Yellow" Then
