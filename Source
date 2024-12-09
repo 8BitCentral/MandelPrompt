@@ -1,23 +1,54 @@
 Imports System.Threading
+Imports System.Drawing
 Module Module1
-    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As String, ColourX As Integer, ColourY As Integer
+    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As Byte, ColourX As Integer, ColourY As Integer
     Dim zMode As Boolean = False, xCenter As Double, yCenter As Double
+    Dim disRender = False
     Dim zoom As Double
-    Sub Main()
+    Sub Main(args As String())
+        If args.Length > 0 Then
+            If args(0) = "-r" Then
+                disRender = True
+            End If
+        End If
         Console.ForegroundColor = ConsoleColor.White
-        Console.WriteLine("For this programme to work you MUST set the terminal font to a '4x6' raster font, if you can easily read this then your font size is probaly wrong. :)")
-        Console.WriteLine()
-        Console.WriteLine("Please enter the horizontal resolution of your monitor")
-        Dim width As Integer = (Console.ReadLine() \ 4) - 6
-        Console.WriteLine("Please enter the vertial resolution of your monitor")
-        Dim height As Integer = Console.ReadLine() \ 6
+        If disRender = False Then
+            Console.WriteLine("Set the window to the correct size for scaling and pess any key")
+            Console.ReadKey()
+        End If
+        If disRender = True Then
+            Console.WriteLine("Please enter the horizontal resolution")
+        End If
+
+        Dim width As Integer, height As Integer
+        If disRender = False Then
+            width = Console.WindowWidth - 1
+        Else
+            width = Console.ReadLine()
+            If width > 10000 Then
+                width = (width \ 10000) * 10000
+                height = width
+            End If
+        End If
+        If disRender = True Then
+            Console.WriteLine("Please enter the vertial resolution of your monitor")
+        End If
+        If disRender = False Then
+            height = Console.WindowHeight
+        Else
+            If width < 10000 Then
+                height = Console.ReadLine()
+            End If
+        End If
         Console.Clear()
         While True
             ColourX = 0
             ColourY = 0
             Dim thread0 As New Thread(AddressOf core2)
             Dim thread1 As New Thread(AddressOf Main)
-            Console.SetCursorPosition(0, WritingPos)
+            If disRender = False Then
+                Console.SetCursorPosition(0, WritingPos)
+            End If
             Console.ForegroundColor = ConsoleColor.White
             Console.WriteLine("                                                                                                                                         ")
             If zMode = False Then
@@ -51,7 +82,9 @@ Module Module1
                     End While
                     core2()
                 Next
-                Console.WriteLine() ' Move to the next row
+                If disRender = False Then
+                    Console.WriteLine() ' Move to the next row
+                End If
                 ColourY += 1
                 ColourX = 0
             Next
@@ -59,9 +92,10 @@ Module Module1
             Console.WriteLine("Re: " & xCenter & " Im: " & (yCenter * -1) & " Zoom: " & zoom)
             Console.WriteLine()
             Dim RenderOption As Char = "p"
-            Console.WriteLine("Press z to activate zooming tool (and deactivate), p to dump Mandelbrot to text file and any other key to continue with coordinate system")
+            Console.WriteLine("Press z to activate zooming tool (and deactivate), p to dump Mandelbrot to text file, w to dump Mandelbrot to PNG and any other key to continue with coordinate system")
             Dim DesktopPath As String = My.Computer.FileSystem.SpecialDirectories.Desktop
             Dim Path As String = IO.Path.Combine(DesktopPath, "Mandelbrot.txt")
+            Dim PathP As String = IO.Path.Combine(DesktopPath, "Mandelbrot.png")
             While RenderOption = "p"
                 RenderOption = Console.ReadKey(True).KeyChar
                 If RenderOption = "z" Then
@@ -73,27 +107,54 @@ Module Module1
                     file = My.Computer.FileSystem.OpenTextFileWriter(Path, True)
                     For i = 0 To height
                         For j = 0 To width
-                            If ColourMap(j, i) = "Black" Then
+                            If ColourMap(j, i) = 7 Then 'Black
                                 file.Write("@")
-                            ElseIf ColourMap(j, i) = "DarkBlue" Then
+                            ElseIf ColourMap(j, i) = 6 Then 'Dark Blue
                                 file.Write("%")
-                            ElseIf ColourMap(j, i) = "Blue" Then
+                            ElseIf ColourMap(j, i) = 5 Then 'Blue
                                 file.Write("#")
-                            ElseIf ColourMap(j, i) = "Cyan" Then
+                            ElseIf ColourMap(j, i) = 4 Then 'Cyan
                                 file.Write("O")
-                            ElseIf ColourMap(j, i) = "Red" Then
+                            ElseIf ColourMap(j, i) = 3 Then 'Red
                                 file.Write("I")
-                            ElseIf ColourMap(j, i) = "Green" Then
+                            ElseIf ColourMap(j, i) = 2 Then 'Green
                                 file.Write("/")
-                            ElseIf ColourMap(j, i) = "Yellow" Then
+                            ElseIf ColourMap(j, i) = 1 Then 'Yellow
                                 file.Write("-")
-                            ElseIf ColourMap(j, i) = "White" Then
+                            ElseIf ColourMap(j, i) = 0 Then 'White
                                 file.Write(" ")
                             End If
                         Next
                         file.WriteLine()
                     Next
                     file.Close()
+                ElseIf RenderOption = "w" Then
+                    Console.Beep(450, 100)
+                    Console.Beep(700, 150)
+                    Dim bmpDump As New Bitmap(width, height)
+                    For i = 0 To height - 1
+                        For j = 0 To width - 1
+                            If ColourMap(j, i) = 7 Then
+                                bmpDump.SetPixel(j, i, Color.Black)
+                            ElseIf ColourMap(j, i) = 6 Then
+                                bmpDump.SetPixel(j, i, Color.DarkBlue)
+                            ElseIf ColourMap(j, i) = 5 Then
+                                bmpDump.SetPixel(j, i, Color.Blue)
+                            ElseIf ColourMap(j, i) = 4 Then
+                                bmpDump.SetPixel(j, i, Color.Cyan)
+                            ElseIf ColourMap(j, i) = 3 Then
+                                bmpDump.SetPixel(j, i, Color.Red)
+                            ElseIf ColourMap(j, i) = 2 Then
+                                bmpDump.SetPixel(j, i, Color.Green)
+                            ElseIf ColourMap(j, i) = 1 Then
+                                bmpDump.SetPixel(j, i, Color.Yellow)
+                            ElseIf ColourMap(j, i) = 0 Then
+                                bmpDump.SetPixel(j, i, Color.White)
+                            End If
+
+                        Next
+                    Next
+                    bmpDump.Save(PathP, System.Drawing.Imaging.ImageFormat.Png)
                 Else
                     zMode = False
                 End If
@@ -103,44 +164,60 @@ Module Module1
     End Sub
     Sub core2()
         If iteration = maxIterations Then
-            ColourMap(ColourX, ColourY) = "Black"
+            ColourMap(ColourX, ColourY) = "7"
             ColourX += 1
-            Console.Write(" ")
+            If disRender = False Then
+                Console.Write(" ")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.75 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "DarkBlue"
+            ColourMap(ColourX, ColourY) = "6"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.DarkBlue
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.DarkBlue
+                Console.Write("█")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.5 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "Blue"
+            ColourMap(ColourX, ColourY) = "5"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.Blue
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.Blue
+                Console.Write("█")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.25 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "Cyan"
+            ColourMap(ColourX, ColourY) = "4"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.Cyan
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.Cyan
+                Console.Write("█")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.15 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "Red"
+            ColourMap(ColourX, ColourY) = "3"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.Red
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.Red
+                Console.Write("█")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.1 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "Green"
+            ColourMap(ColourX, ColourY) = "2"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.Green
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.Green
+                Console.Write("█")
+            End If
         ElseIf iteration < maxIterations And iteration > maxIterations * (0.05 / (Math.Log10(zoom) / 2 + 1)) Then
-            ColourMap(ColourX, ColourY) = "Yellow"
+            ColourMap(ColourX, ColourY) = "1"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.Yellow
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.Yellow
+                Console.Write("█")
+            End If
         Else
-            ColourMap(ColourX, ColourY) = "White"
+            ColourMap(ColourX, ColourY) = "0"
             ColourX += 1
-            Console.ForegroundColor = ConsoleColor.White
-            Console.Write("█")
+            If disRender = False Then
+                Console.ForegroundColor = ConsoleColor.White
+                Console.Write("█")
+            End If
         End If
     End Sub
     Sub zooming(ByVal width As Integer, ByVal height As Integer)
@@ -177,7 +254,7 @@ Module Module1
                 Console.ForegroundColor = ConsoleColor.White
                 WritingPos = height + 2
                 Console.SetCursorPosition(0, WritingPos)
-                Console.WriteLine("                                                                                                                                         ")
+                Console.WriteLine("                                                                                                                                                                      ")
                 Console.WriteLine(" Please enter zoom multiplier.")
                 zMultiplier = Console.ReadLine()
                 Console.WriteLine()
@@ -192,21 +269,21 @@ Module Module1
         End While
     End Sub
     Sub ColourChart(ByVal MidX As Integer, ByVal MidY As Integer)
-        If ColourMap(MidX, MidY) = "White" Then
+        If ColourMap(MidX, MidY) = 0 Then
             Console.ForegroundColor = ConsoleColor.White
-        ElseIf ColourMap(MidX, MidY) = "Yellow" Then
+        ElseIf ColourMap(MidX, MidY) = 1 Then
             Console.ForegroundColor = ConsoleColor.Yellow
-        ElseIf ColourMap(MidX, MidY) = "Green" Then
+        ElseIf ColourMap(MidX, MidY) = 2 Then
             Console.ForegroundColor = ConsoleColor.Green
-        ElseIf ColourMap(MidX, MidY) = "Cyan" Then
-            Console.ForegroundColor = ConsoleColor.Cyan
-        ElseIf ColourMap(MidX, MidY) = "Red" Then
+        ElseIf ColourMap(MidX, MidY) = 3 Then
             Console.ForegroundColor = ConsoleColor.Red
-        ElseIf ColourMap(MidX, MidY) = "Blue" Then
+        ElseIf ColourMap(MidX, MidY) = 4 Then
+            Console.ForegroundColor = ConsoleColor.Cyan
+        ElseIf ColourMap(MidX, MidY) = 5 Then
             Console.ForegroundColor = ConsoleColor.Blue
-        ElseIf ColourMap(MidX, MidY) = "DarkBlue" Then
+        ElseIf ColourMap(MidX, MidY) = 6 Then
             Console.ForegroundColor = ConsoleColor.DarkBlue
-        ElseIf ColourMap(MidX, MidY) = "Black" Then
+        ElseIf ColourMap(MidX, MidY) = 7 Then
             Console.ForegroundColor = ConsoleColor.Black
         End If
     End Sub
