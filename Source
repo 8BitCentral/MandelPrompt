@@ -1,7 +1,7 @@
 Imports System.Threading
 Imports System.Drawing
 Module Module1
-    Dim iteration As Integer, maxIterations As Integer, WritingPos = 0, ColourMap(10000, 10000) As Byte, ColourX As Integer, ColourY As Integer
+    Dim iteration As Integer, maxIterations As Integer, WritingPos As Integer = 0, ColourMap(10000, 10000) As Byte, ColourX As Integer, ColourY As Integer
     Dim zMode As Boolean = False, xCenter As Double, yCenter As Double
     Dim disRender = False
     Dim zoom As Double
