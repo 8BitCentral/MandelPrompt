@@ -44,8 +44,6 @@ Module Module1
         While True
             ColourX = 0
             ColourY = 0
-            Dim thread0 As New Thread(AddressOf core2)
-            Dim thread1 As New Thread(AddressOf Main)
             If disRender = False Then
                 Console.SetCursorPosition(0, WritingPos)
             End If
@@ -80,7 +78,7 @@ Module Module1
                         zx = tmp
                         iteration += 1
                     End While
-                    core2()
+                    Rendering()
                 Next
                 If disRender = False Then
                     Console.WriteLine() ' Move to the next row
@@ -162,7 +160,7 @@ Module Module1
             WritingPos = height + 2
         End While
     End Sub
-    Sub core2()
+    Sub Rendering()
         If iteration = maxIterations Then
             ColourMap(ColourX, ColourY) = "7"
             ColourX += 1
