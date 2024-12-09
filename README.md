@@ -24,5 +24,5 @@ MattKC ported .Net 2.0 to Windows 95 at: https://github.com/itsmattkc/dotnet9x .
 
  ----------------------------------------------------------------------------------------------------------------------------
 
- You can now also print a text file to desktop which contain the last rendered frame as an ASCII image. A .png file can also be dumped in v1.1 as well as a feature to disable rendering so that large .png files can be created.
+ You can now also print a text file to desktop which contain the last rendered frame as an ASCII image. A .png file can also be dumped in v1.1 as well as a feature to disable rendering so that large .png files can be created. The resolution of the window is now also detected so it doesn't have to be entered in manually.
  ![Fractal Zoom](https://github.com/user-attachments/assets/ac80eae6-e2a4-4372-a01d-9637065096b5)
